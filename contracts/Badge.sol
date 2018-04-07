@@ -24,4 +24,8 @@ contract Badge {
         return url;
     }
 
+    function getProperties() public view returns (string, string, string) {
+        return (name, description, url);
+    }
+
 }

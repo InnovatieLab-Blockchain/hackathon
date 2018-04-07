@@ -30,23 +30,22 @@ contract CreatedBadges {
         addedBadge("New badge added:", badgeAddress, name, description, ipfsUrl);
     }
 
-    function getBadgesForIdentity(address userKey) public view returns (Badge[]) {
+    function getBadgesForIdentity(address userKey) public view returns (address[]) {
         MyBadges storage myBadges = createdBadges[userKey];
-        Badge[] memory badges = new Badge[](myBadges.badgeKeys.length);
-
-        for(uint index = 0; index < myBadges.badgeKeys.length; index++) {
-            badges[index] = myBadges.badges[myBadges.badgeKeys[index]];
+        address[] memory badges = new address[](myBadges.badgeKeys.length);
+        for (uint index = 0; index < myBadges.badgeKeys.length; index++) {
+            badges[index] = address(myBadges.badges[myBadges.badgeKeys[index]]);
         }
         return badges;
     }
 
-    function getAllBadges() public returns (Badge[]) {
-        Badge[] memory badges = new Badge[](totalBadges);
+    function getAllBadges() public returns (address[]) {
+        address[] memory badges = new address[](totalBadges);
 
-        for(uint index = 0; index < createdBadgeKeys.length; index++) {
-            Badge[] memory badgeList = getBadgesForIdentity(createdBadgeKeys[index]);
+        for (uint index = 0; index < createdBadgeKeys.length; index++) {
+            address[] memory badgeList = getBadgesForIdentity(createdBadgeKeys[index]);
 
-            for(uint i = 0; i < badgeList.length; i++) {
+            for (uint i = 0; i < badgeList.length; i++) {
                 badges[i] = badgeList[index];
             }
         }
@@ -55,13 +54,12 @@ contract CreatedBadges {
     }
 
     function addressPresent(address key) public view returns (bool) {
-        for(uint index = 0; index < createdBadgeKeys.length; index++) {
-            if(key == createdBadgeKeys[index]) {
+        for (uint index = 0; index < createdBadgeKeys.length; index++) {
+            if (key == createdBadgeKeys[index]) {
                 return true;
             }
         }
         return false;
     }
-
 
 }
