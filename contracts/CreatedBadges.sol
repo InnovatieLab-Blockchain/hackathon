@@ -28,9 +28,9 @@ contract CreatedBadges {
             myBadges.badgeKeys.push(userKey);
             totalBadges++;
 
-            emit addedBadge("New badge added:", badgeAddress, toString(name), toString(description), toString(ipfsUrl));
+            addedBadge("New badge added:", badgeAddress, toString(name), toString(description), toString(ipfsUrl));
         } else {
-            emit errorLog("No badge added: address, name, description or ipfsHash is missing!");
+            errorLog("No badge added: address, name, description or ipfsHash is missing!");
         }
     }
 
@@ -56,7 +56,7 @@ contract CreatedBadges {
                 badges[i] = badgeList[index];
             }
         }
-        emit badgesCount("Total number of added badges for all identities: ", badges.length);
+        badgesCount("Total number of added badges for all identities: ", badges.length);
         return badges;
     }
 
