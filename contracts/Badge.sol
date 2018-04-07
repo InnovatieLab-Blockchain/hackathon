@@ -2,25 +2,25 @@ pragma solidity ^0.4.19;
 
 contract Badge {
 
-    bytes32 public name;
-    bytes32 public description;
-    bytes32 public url;
+    string public name;
+    string public description;
+    string public url;
 
-    function Badge(bytes32 badgeName, bytes32 badgeDescription, bytes32 ipfsUrl) public {
+    function Badge(string badgeName, string badgeDescription, string ipfsUrl) public {
         name = badgeName;
         description = badgeDescription;
         url = ipfsUrl;
     }
 
-    function getName() public view returns (bytes32) {
+    function getName() public view returns (string) {
         return name;
     }
 
-    function getDescription() public view returns (bytes32) {
+    function getDescription() public view returns (string) {
         return description;
     }
 
-    function getUrl() public view returns (bytes32) {
+    function getUrl() public view returns (string) {
         return url;
     }
 

@@ -15,30 +15,24 @@ contract CreatedBadges {
     address[] createdBadgeKeys;
     uint256 totalBadges;
 
-    function addBadge(address userKey, bytes32 name, bytes32 description, bytes32 ipfsUrl) public {
-        if(userKey != 0x0 && name != 0 && description != 0 && ipfsUrl != 0) {
-            Badge badge = new Badge(name, description, ipfsUrl);
-            address badgeAddress = address(badge);
+    function addBadge(address userKey, string name, string description, string ipfsUrl) public {
+        Badge badge = new Badge(name, description, ipfsUrl);
+        address badgeAddress = address(badge);
 
-            if(!addressPresent(userKey)) {
-                createdBadgeKeys.push(userKey);
-            }
-            MyBadges storage myBadges = createdBadges[userKey];
-            myBadges.badges[badgeAddress] = badge;
-            myBadges.badgeKeys.push(userKey);
-            totalBadges++;
-
-            addedBadge("New badge added:", badgeAddress, toString(name), toString(description), toString(ipfsUrl));
-        } else {
-            errorLog("No badge added: address, name, description or ipfsHash is missing!");
+        if(!addressPresent(userKey)) {
+            createdBadgeKeys.push(userKey);
         }
+        MyBadges storage myBadges = createdBadges[userKey];
+        myBadges.badges[badgeAddress] = badge;
+        myBadges.badgeKeys.push(userKey);
+        totalBadges++;
+
+        addedBadge("New badge added:", badgeAddress, name, description, ipfsUrl);
     }
 
-    function getBadgesForIdentity(address userKey) public returns (Badge[]) {
+    function getBadgesForIdentity(address userKey) public view returns (Badge[]) {
         MyBadges storage myBadges = createdBadges[userKey];
         Badge[] memory badges = new Badge[](myBadges.badgeKeys.length);
-
-        //emit badgesCount("Number of added badges for this identity: ", badges.length);
 
         for(uint index = 0; index < myBadges.badgeKeys.length; index++) {
             badges[index] = myBadges.badges[myBadges.badgeKeys[index]];
@@ -69,13 +63,5 @@ contract CreatedBadges {
         return false;
     }
 
-    function toString(bytes32 _bytes32) public pure returns (string) {
-        bytes memory bytesArray = new bytes(32);
-
-        for (uint256 i = 0; i < 32; i++) {
-            bytesArray[i] = _bytes32[i];
-        }
-        return string(bytesArray);
-    }
 
 }
