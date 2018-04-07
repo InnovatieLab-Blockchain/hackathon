@@ -8,7 +8,6 @@ contract CreatedBadges {
     event errorLog(string);
 
     struct MyBadges {
-        mapping(address => Badge) badges;
         address[] badgeKeys;
     }
     mapping (address => MyBadges) createdBadges;
@@ -23,8 +22,7 @@ contract CreatedBadges {
             createdBadgeKeys.push(userKey);
         }
         MyBadges storage myBadges = createdBadges[userKey];
-        myBadges.badges[badgeAddress] = badge;
-        myBadges.badgeKeys.push(userKey);
+        myBadges.badgeKeys.push(badgeAddress);
         totalBadges++;
 
         addedBadge("New badge added:", badgeAddress, name, description, ipfsUrl);
@@ -32,11 +30,7 @@ contract CreatedBadges {
 
     function getBadgesForIdentity(address userKey) public view returns (address[]) {
         MyBadges storage myBadges = createdBadges[userKey];
-        address[] memory badges = new address[](myBadges.badgeKeys.length);
-        for (uint index = 0; index < myBadges.badgeKeys.length; index++) {
-            badges[index] = address(myBadges.badges[myBadges.badgeKeys[index]]);
-        }
-        return badges;
+        return myBadges.badgeKeys;
     }
 
     function getAllBadges() public returns (address[]) {
