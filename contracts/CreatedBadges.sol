@@ -35,12 +35,13 @@ contract CreatedBadges {
 
     function getAllBadges() public returns (address[]) {
         address[] memory badges = new address[](totalBadges);
+        uint counter = 0;
 
         for (uint index = 0; index < createdBadgeKeys.length; index++) {
             address[] memory badgeList = getBadgesForIdentity(createdBadgeKeys[index]);
 
             for (uint i = 0; i < badgeList.length; i++) {
-                badges[i] = badgeList[index];
+                badges[counter++] = badgeList[i];
             }
         }
         badgesCount("Total number of added badges for all identities: ", badges.length);
