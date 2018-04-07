@@ -8,7 +8,7 @@ if (typeof web3 !== 'undefined') {
 web3 = new Web3(web3Provider);
 
 var abi = JSON.parse("[{\"constant\":true,\"inputs\":[],\"name\":\"getAllAddresses\",\"outputs\":[{\"name\":\"\",\"type\":\"address[]\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"key\",\"type\":\"address\"}],\"name\":\"getBadge\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"key\",\"type\":\"address\"},{\"name\":\"badgeName\",\"type\":\"bytes\"},{\"name\":\"badgeDescription\",\"type\":\"bytes\"},{\"name\":\"badgeIpfs\",\"type\":\"bytes\"}],\"name\":\"addBadge\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getAllBadges\",\"outputs\":[{\"name\":\"\",\"type\":\"address[]\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"key\",\"type\":\"address\"}],\"name\":\"removeBadge\",\"outputs\":[{\"name\":\"result\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]");
-var contractAddress = "0x682753582151c0B1592827CB69Dd554CC53Bd92A";
+var contractAddress = "0x83dBd04c5841aD4231151C8CFEEB2A0949DEa90c";
 var contract = web3.eth.contract(abi).at(contractAddress);
 
 function storeBadge() {
