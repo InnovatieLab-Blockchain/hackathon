@@ -3,87 +3,79 @@ pragma solidity ^0.4.19;
 import "./Badge.sol";
 
 contract CreatedBadges {
+    event addedBadge(string, address, string, string, string);
+    event badgesCount(string, uint);
+    event errorLog(string);
 
-    struct BadgeElement {
-        address previous;
-        address next;
-        Badge badge;
+    struct MyBadges {
+        mapping(address => Badge) badges;
+        address[] badgeKeys;
     }
-    uint size;
-    address head;
-    address tail;
-    mapping (address => BadgeElement) badges;
-    address[] badgeAddresses;
+    mapping (address => MyBadges) createdBadges;
+    address[] createdBadgeKeys;
+    uint256 totalBadges;
 
-    function getAllAddresses() public view returns (address[]) {
-        return badgeAddresses;
-    }
+    function addBadge(address userKey, bytes32 name, bytes32 description, bytes32 ipfsUrl) public {
+        if(userKey != 0x0 && name != 0 && description != 0 && ipfsUrl != 0) {
+            Badge badge = new Badge(name, description, ipfsUrl);
+            address badgeAddress = address(badge);
 
-    function getAllBadges() public view returns (Badge[]) {
-        Badge[] memory badgeList = new Badge[](size);
+            if(!addressPresent(userKey)) {
+                createdBadgeKeys.push(userKey);
+            }
+            MyBadges storage myBadges = createdBadges[userKey];
+            myBadges.badges[badgeAddress] = badge;
+            myBadges.badgeKeys.push(userKey);
+            totalBadges++;
 
-        for(uint index = 0; index < badgeAddresses.length; index++) {
-            badgeList[index] = badges[badgeAddresses[index]].badge;
-        }
-        return badgeList;
-    }
-
-    function getBadge(address key) public view returns (Badge) {
-        return badges[key].badge;
-    }
-
-    function addBadge(address key, bytes badgeName, bytes badgeDescription, bytes badgeIpfs) public returns (bool) {
-        Badge badge = new Badge(badgeName, badgeDescription, badgeIpfs);
-
-        BadgeElement storage badgeElement = badges[key];
-
-        if(badgeElement.badge != Badge(0x0)) {
-            return false;
-        }
-        badgeElement.badge = badge;
-        badgeAddresses.push(key);
-
-        if(size == 0){
-            tail = key;
-            head = key;
+            emit addedBadge("New badge added:", badgeAddress, toString(name), toString(description), toString(ipfsUrl));
         } else {
-            badges[head].next = key;
-            badgeElement.previous = head;
-            head = key;
+            emit errorLog("No badge added: address, name, description or ipfsHash is missing!");
         }
-        size++;
-        return true;
     }
 
-    function removeBadge(address key) public returns (bool result) {
-        BadgeElement storage badgeElement = badges[key];
+    function getBadgesForIdentity(address userKey) public returns (Badge[]) {
+        MyBadges storage myBadges = createdBadges[userKey];
+        Badge[] memory badges = new Badge[](myBadges.badgeKeys.length);
 
-        if(badgeElement.badge == Badge(0x0)) {
-            return false;
-        }
-        if(size == 1) {
-            tail = 0x0;
-            head = 0x0;
-        } else if (key == head) {
-            head = badgeElement.previous;
-            badges[head].next = 0x0;
-        } else if(key == tail){
-            tail = badgeElement.next;
-            badges[tail].previous = 0x0;
-        } else {
-            address prevElem = badgeElement.previous;
-            address nextElem = badgeElement.next;
-            badges[prevElem].next = nextElem;
-            badges[nextElem].previous = prevElem;
-        }
-        size--;
-        delete badges[key];
+        //emit badgesCount("Number of added badges for this identity: ", badges.length);
 
-        for(uint index = 0; index < badgeAddresses.length; index++) {
-            if(key == badgeAddresses[index]) {
-                delete badgeAddresses[index];
+        for(uint index = 0; index < myBadges.badgeKeys.length; index++) {
+            badges[index] = myBadges.badges[myBadges.badgeKeys[index]];
+        }
+        return badges;
+    }
+
+    function getAllBadges() public returns (Badge[]) {
+        Badge[] memory badges = new Badge[](totalBadges);
+
+        for(uint index = 0; index < createdBadgeKeys.length; index++) {
+            Badge[] memory badgeList = getBadgesForIdentity(createdBadgeKeys[index]);
+
+            for(uint i = 0; i < badgeList.length; i++) {
+                badges[i] = badgeList[index];
             }
         }
-        return true;
+        emit badgesCount("Total number of added badges for all identities: ", badges.length);
+        return badges;
     }
+
+    function addressPresent(address key) public view returns (bool) {
+        for(uint index = 0; index < createdBadgeKeys.length; index++) {
+            if(key == createdBadgeKeys[index]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function toString(bytes32 _bytes32) public pure returns (string) {
+        bytes memory bytesArray = new bytes(32);
+
+        for (uint256 i = 0; i < 32; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
+    }
+
 }
